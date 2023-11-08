@@ -5,14 +5,18 @@
 #include <gtest/gtest.h>
 #include "Password.h"
 
+// This is a test feature
 class PasswordTest : public ::testing::Test
 {
 	protected:
+		// This is a test fixture
 		PasswordTest(){} //constructor runs before each test
 		virtual ~PasswordTest(){} //destructor cleans up after tests
 		virtual void SetUp(){} //sets up before each test (after constructor)
 		virtual void TearDown(){} //clean up after each test, (before destructor)
 };
+
+// If you add a feature, use TEST_F
 
 TEST(PasswordTest, smoke_test)
 {
@@ -20,9 +24,9 @@ TEST(PasswordTest, smoke_test)
 }
 TEST(PasswordTest, single_letter_password)
 {
-    Password my_password;
+  Password my_password;
 	int actual = my_password.count_leading_characters("Z");
-	ASSERT_EQ(1,actual);
+	ASSERT_EQ(0,actual);
 }
 
 TEST(PasswordTest, spaces_in_password){
@@ -31,16 +35,28 @@ TEST(PasswordTest, spaces_in_password){
 	ASSERT_EQ(3,spaces);
 }
 
+// TEST(PasswordTest, spaces_at_end_of_password){
+// 	Password my_password;
+// 	int spaces = my_password.count_leading_characters("abc   ");
+// 	ASSERT_EQ(3,spaces);
+// }
+
 TEST(PasswordTest, numbers_in_password){
 	Password my_password;
-	int numbers = my_password.count_leading_characters("123");
-	ASSERT_EQ(1,numbers);
+	int numbers = my_password.count_leading_characters("123ABC");
+	ASSERT_EQ(0,numbers);
 }
 
-TEST(PasswordTest, symbols_in_password){
+TEST(PasswordTest, repeating_numbers_in_password){
 	Password my_password;
-	int symbols = my_password.count_leading_characters("!?@");
-	ASSERT_EQ(1,symbols);
+	int repeating_numbers = my_password.count_leading_characters("111");
+	ASSERT_EQ(3,repeating_numbers);
+}
+
+TEST(PasswordTest, repeating_symbols_in_password){
+	Password my_password;
+	int symbols = my_password.count_leading_characters("!!?@");
+	ASSERT_EQ(2,symbols);
 }
 
 TEST(PasswordTest, empty_password){
@@ -85,8 +101,26 @@ TEST(PasswordTest, mixed_case_with_spaces_password){
 	ASSERT_EQ(true,mixed_case_with_spaces);
 }
 
+TEST(PasswordTest, no_mixed_case_with_spaces){
+	Password my_password;
+	bool no_mixed_case_with_spaces = my_password.has_mixed_case("abcd  ");
+	ASSERT_EQ(false,no_mixed_case_with_spaces);
+}
+
 TEST(PasswordTest, mixed_case_with_empty_password){
 	Password my_password;
 	bool mixed_case_with_empty = my_password.has_mixed_case("");
 	ASSERT_EQ(false,mixed_case_with_empty);
+}
+
+TEST(PasswordTest, mixed_case_space_and_symbols_password){
+	Password my_password;
+	bool mixed_case_space_and_symbols = my_password.has_mixed_case(" A");
+	ASSERT_EQ(false,mixed_case_space_and_symbols);
+}
+
+TEST(PasswordTest, mixed_case_with_symbols_and_numbers_password){
+	Password my_password;
+	bool mixed_case_with_symbols_and_numbers = my_password.has_mixed_case("AbCd!@#123");
+	ASSERT_EQ(true,mixed_case_with_symbols_and_numbers);
 }
