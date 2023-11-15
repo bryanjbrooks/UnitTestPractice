@@ -35,11 +35,11 @@ TEST(PasswordTest, spaces_in_password){
 	ASSERT_EQ(3,spaces);
 }
 
-// TEST(PasswordTest, spaces_at_end_of_password){
-// 	Password my_password;
-// 	int spaces = my_password.count_leading_characters("abc   ");
-// 	ASSERT_EQ(3,spaces);
-// }
+TEST(PasswordTest, spaces_at_end_of_password){
+	Password my_password;
+	int spaces = my_password.count_leading_characters("abc   ");
+	ASSERT_EQ(0,spaces);
+}
 
 TEST(PasswordTest, numbers_in_password){
 	Password my_password;
@@ -123,4 +123,61 @@ TEST(PasswordTest, mixed_case_with_symbols_and_numbers_password){
 	Password my_password;
 	bool mixed_case_with_symbols_and_numbers = my_password.has_mixed_case("AbCd!@#123");
 	ASSERT_EQ(true,mixed_case_with_symbols_and_numbers);
+}
+
+TEST(PasswordTest, mixed_case_with_0){
+	Password my_password;
+	bool mixed_case_with_0 = my_password.has_mixed_case("AbCd0");
+	ASSERT_EQ(true,mixed_case_with_0);
+}
+
+TEST(PasswordTest, no_mixed_case){
+	Password my_password;
+	bool no_mixed_case = my_password.has_mixed_case("ABCD");
+	ASSERT_EQ(false,no_mixed_case);
+}
+
+TEST(PasswordTest, no_mixed_case_with_numbers){
+	Password my_password;
+	bool no_mixed_case_with_numbers = my_password.has_mixed_case("123");
+	ASSERT_EQ(false,no_mixed_case_with_numbers);
+}
+
+TEST(PasswordTest, authenticate_bad_password){
+	Password my_password;
+	bool authenticate = my_password.authenticate("AbCd123");
+	ASSERT_EQ(false,authenticate);
+}
+
+TEST(PasswordTest, authenticate_good_password){
+	Password my_password;
+	bool authenticate = my_password.authenticate("ChicoCA-95929");
+	ASSERT_EQ(true,authenticate);
+}
+
+TEST(PasswordTest, authenticate_empty_password){
+	Password my_password;
+	bool authenticate = my_password.authenticate("");
+	ASSERT_EQ(false,authenticate);
+}
+
+TEST(PasswordTest, update_password_and_authenticate){
+	Password my_password;
+	my_password.set("AbCd1234");
+	bool authenticate = my_password.authenticate("AbCd1234");
+	ASSERT_EQ(true,authenticate);
+}
+
+TEST(PasswordTest, update_password_with_existing_password){
+	Password my_password;
+	my_password.set("ChicoCA-95929");
+	bool authenticate = my_password.authenticate("ChicoCA-95929");
+	ASSERT_EQ(true,authenticate);
+}
+
+TEST(PasswordTest, set_short_password){
+	Password my_password;
+	my_password.set("ABC123");
+	bool authenticate = my_password.authenticate("AbCd");
+	ASSERT_EQ(false,authenticate);
 }
